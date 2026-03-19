@@ -8,15 +8,17 @@ namespace SpendNote.Pages
 
         public Entry UsernameInputField = new() { Placeholder = "Имя пользователя" };
         public Entry PasswordInputField = new() {IsPassword = true, Placeholder = "Пароль" };
+        public HorizontalStackLayout horizontal;
         public Button SignIn = new() { Text = "Войти" };
 
         private readonly IScreenshotProtectionService _screenService;
         public MainPage(IScreenshotProtectionService screenshotProtect)
         {
+            horizontal = new HorizontalStackLayout { Children = { new Image { Source = ImageSource.FromResource("EyesClose.png") }, PasswordInputField } };
+
             _screenService = screenshotProtect;
 
             isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
-
 
 
             var mainPanel = new VerticalStackLayout
@@ -24,14 +26,8 @@ namespace SpendNote.Pages
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
                 Children = {
-                    new Label {
-                        Text = "Вход в аккаунт",
-                        FontAttributes = FontAttributes.Bold,
-                        FontSize = 20,
-                        TextColor = isDarkMode ? Colors.White : Colors.Black
-                    },
+                    new Label { Text = "Вход в аккаунт", FontAttributes = FontAttributes.Bold, FontSize = 20, TextColor = isDarkMode ? Colors.White : Colors.Black },
                     UsernameInputField,
-                    PasswordInputField,
                     SignIn
                 }
             };
