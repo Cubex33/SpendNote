@@ -7,7 +7,8 @@ namespace SpendNote.Pages
         bool isDarkMode = false;
 
         public Entry UsernameInputField = new() { Placeholder = "Имя пользователя" };
-        public Entry PasswordInputField = new() { Placeholder = "Пароль" };
+        public Entry PasswordInputField = new() {IsPassword = true, Placeholder = "Пароль" };
+        public Button SignIn = new() { Text = "Войти" };
 
         private readonly IScreenshotProtectionService _screenService;
         public MainPage(IScreenshotProtectionService screenshotProtect)
@@ -30,7 +31,8 @@ namespace SpendNote.Pages
                         TextColor = isDarkMode ? Colors.White : Colors.Black
                     },
                     UsernameInputField,
-                    PasswordInputField
+                    PasswordInputField,
+                    SignIn
                 }
             };
             Content = mainPanel;
