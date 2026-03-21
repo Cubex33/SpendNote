@@ -30,8 +30,6 @@ namespace SpendNote
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-            DatabaseProvider.Init(Path.Combine(FileSystem.AppDataDirectory, "spendnote.db"));
-            DatabaseProvider.connection?.CreateTable<Users>();
             return builder.Build();
         }
     }

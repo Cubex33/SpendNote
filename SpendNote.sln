@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11605.240 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendNote", "SpendNote.csproj", "{E94F46B8-50DA-554E-0412-5AE5755F6166}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E94F46B8-50DA-554E-0412-5AE5755F6166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E94F46B8-50DA-554E-0412-5AE5755F6166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E94F46B8-50DA-554E-0412-5AE5755F6166}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E94F46B8-50DA-554E-0412-5AE5755F6166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E94F46B8-50DA-554E-0412-5AE5755F6166}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D34F087-0DB4-4C53-98E6-7C4F64A9F9E0}
+	EndGlobalSection
+EndGlobal

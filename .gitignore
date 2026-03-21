@@ -2,6 +2,7 @@
 .idea/
 *.user
 *.DotSettings.user
+Models/
 
 
 bin/
