@@ -2,6 +2,7 @@ using SpendNote.Interfaces;
 using SpendNote.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Maui.Storage;
 
 namespace SpendNote.Pages
 {
@@ -18,6 +19,8 @@ namespace SpendNote.Pages
         private readonly IScreenshotProtectionService _screenService;
         public MainPage(IScreenshotProtectionService screenshotProtect)
         {
+            NavigationPage.SetHasNavigationBar(this, false);
+            CheckLogin();
             isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
 
             var HaventAccount = new Button { Text = "Нет аккаунта", BackgroundColor = Colors.Transparent };
@@ -31,10 +34,6 @@ namespace SpendNote.Pages
             var HaveAccount = new Button { Text = "Есть аккаунта", BackgroundColor = Colors.Transparent };
 
             HaveAccount.TextColor = isDarkMode ? Colors.White : Colors.Black;
-
-            var ForgetPassword = new Button { Text = "Забыли пароль?", BackgroundColor = Colors.Transparent };
-
-            ForgetPassword.TextColor = isDarkMode ? Colors.White : Colors.Black;
 
             var ShowPasswordButton = new ImageButton { Source = isDarkMode ? "eyes_open_white.png" : "eyes_open.png", WidthRequest = 24, HeightRequest = 24, BackgroundColor = Colors.Transparent };
             var RegShowPasswordButton = new ImageButton { Source = isDarkMode ? "eyes_open_white.png" : "eyes_open.png", WidthRequest = 24, HeightRequest = 24, BackgroundColor = Colors.Transparent };
@@ -54,7 +53,7 @@ namespace SpendNote.Pages
             var navGUI = new HorizontalStackLayout
             {
                 HorizontalOptions = LayoutOptions.Center,
-                Children = { ForgetPassword, HaventAccount }
+                Children = {HaventAccount }
             };
 
             var registretionNavGUI = new HorizontalStackLayout
@@ -93,6 +92,15 @@ namespace SpendNote.Pages
             Content = mainPanel;
         }
 
+        private async void CheckLogin()
+        {
+            var Id = await SecureStorage.Default.GetAsync("Id");
+            if (Id != null)
+            {
+                await Navigation.PushAsync(new ExpensesPage(_screenService));
+            }
+        }
+
         private async Task SignIn()
         {
             try
@@ -108,14 +116,16 @@ namespace SpendNote.Pages
                 var firebaseService = new FirebaseService();
 
                 var user = await firebaseService.LoginUser(UsernameInputField.Text, hashPassword);
-                if (user != null)
-                {
-                    await DisplayAlert("Успешно", $"Вы успешно зашли в аккаунт: {user.Username}", "Ok");
-                }
-                else
+                if (user == null)
                 {
                     await DisplayAlert("Ошибка", "Такого пользователя не существует", "Ok");
+                    return;
                 }
+                await SecureStorage.Default.SetAsync(nameof(user.Id), user.Id);
+                await SecureStorage.Default.SetAsync(nameof(user.Username), user.Username);
+                await SecureStorage.Default.SetAsync("SignInAt", DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"));
+                await Navigation.PushAsync(new ExpensesPage(_screenService));
+
             }
             catch (Exception ex)
             {
@@ -142,14 +152,17 @@ namespace SpendNote.Pages
                 string cryptoPassword = Convert.ToHexString(SHA512.HashData(Encoding.UTF8.GetBytes(RegPassword.Text)));
 
                 var firebaseService = new FirebaseService();
-                var User = new Users
+                var user = new Users
                 {
                     Username = RegUsernameInputField.Text,
                     Password = cryptoPassword,
                     CreatedAt = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy")
                 };
-                await firebaseService.RegisterUser(User);
-                await DisplayAlert("Успешно", $"Аккаунт создан", "Ok");
+                await SecureStorage.Default.SetAsync(nameof(user.Id), user.Id);
+                await SecureStorage.Default.SetAsync(nameof(user.Username), user.Username);
+                await SecureStorage.Default.SetAsync("SignInAt", DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"));
+                await firebaseService.RegisterUser(user);
+                await Navigation.PushAsync(new ExpensesPage(_screenService));
             }
             catch (Exception ex)
             {
