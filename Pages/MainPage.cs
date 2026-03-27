@@ -1,5 +1,7 @@
 using SpendNote.Interfaces;
 using SpendNote.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SpendNote.Pages
 {
@@ -7,12 +9,11 @@ namespace SpendNote.Pages
     {
         bool isDarkMode = false;
 
-        public Entry UsernameInputField = new() { Placeholder = "Имя пользователя", WidthRequest = 300 };
-        public Entry PasswordInputField = new() { IsPassword = true, Placeholder = "Пароль", WidthRequest = 260 };
-        public Entry RegUsernameInputField = new() { Placeholder = "Имя пользователя", WidthRequest = 300 };
-        public Entry RegPassword = new() { IsPassword = true, Placeholder = "Пароль", WidthRequest = 260 };
-        public Entry RegConfirmPassword = new() { IsPassword = true,
-        Placeholder = "Повторный пароль", WidthRequest = 260 };
+         Entry UsernameInputField = new() { Placeholder = "Имя пользователя", WidthRequest = 300 };
+         Entry PasswordInputField = new() { IsPassword = true, Placeholder = "Пароль", WidthRequest = 260 };
+         Entry RegUsernameInputField = new() { Placeholder = "Имя пользователя", WidthRequest = 300 };
+         Entry RegPassword = new() { IsPassword = true, Placeholder = "Пароль", WidthRequest = 260 };
+         Entry RegConfirmPassword = new() { IsPassword = true, Placeholder = "Повторный пароль", WidthRequest = 260 };
 
         private readonly IScreenshotProtectionService _screenService;
         public MainPage(IScreenshotProtectionService screenshotProtect)
@@ -101,9 +102,12 @@ namespace SpendNote.Pages
                     await DisplayAlert("Ошибка", $"Есть пустые поля", "Ok");
                     return;
                 }
+
+                string hashPassword = Convert.ToHexString(SHA512.HashData(Encoding.UTF8.GetBytes(PasswordInputField.Text)));
+
                 var firebaseService = new FirebaseService();
 
-                var user = await firebaseService.LoginUser(UsernameInputField.Text, PasswordInputField.Text);
+                var user = await firebaseService.LoginUser(UsernameInputField.Text, hashPassword);
                 if (user != null)
                 {
                     await DisplayAlert("Успешно", $"Вы успешно зашли в аккаунт: {user.Username}", "Ok");
@@ -135,12 +139,14 @@ namespace SpendNote.Pages
                     return;
                 }
 
+                string cryptoPassword = Convert.ToHexString(SHA512.HashData(Encoding.UTF8.GetBytes(RegPassword.Text)));
+
                 var firebaseService = new FirebaseService();
                 var User = new Users
                 {
                     Username = RegUsernameInputField.Text,
-                    Password = RegPassword.Text,
-                    CreatedAt = DateTime.Now.ToString("HH:mm:HH dd.MM.yyyy")
+                    Password = cryptoPassword,
+                    CreatedAt = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy")
                 };
                 await firebaseService.RegisterUser(User);
                 await DisplayAlert("Успешно", $"Аккаунт создан", "Ok");
