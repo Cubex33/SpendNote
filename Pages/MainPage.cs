@@ -95,10 +95,16 @@ namespace SpendNote.Pages
         private async void CheckLogin()
         {
             var Id = await SecureStorage.Default.GetAsync("Id");
+            var UserName = await SecureStorage.Default.GetAsync("Username");
             if (Id != null)
             {
-                await Navigation.PushAsync(new ExpensesPage(_screenService));
+                Session.SessionId = Id;
             }
+            if (UserName != null)
+            {
+                Session.SessionName = UserName;
+            }
+            await Navigation.PushAsync(new ExpensesPage(_screenService));
         }
 
         private async Task SignIn()
@@ -124,6 +130,8 @@ namespace SpendNote.Pages
                 await SecureStorage.Default.SetAsync(nameof(user.Id), user.Id);
                 await SecureStorage.Default.SetAsync(nameof(user.Username), user.Username);
                 await SecureStorage.Default.SetAsync("SignInAt", DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"));
+                Session.SessionName = user.Username;
+                Session.SessionId = user.Id;
                 await Navigation.PushAsync(new ExpensesPage(_screenService));
 
             }
@@ -162,6 +170,8 @@ namespace SpendNote.Pages
                 await SecureStorage.Default.SetAsync(nameof(user.Username), user.Username);
                 await SecureStorage.Default.SetAsync("SignInAt", DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"));
                 await firebaseService.RegisterUser(user);
+                Session.SessionName = user.Username;
+                Session.SessionId = user.Id;
                 await Navigation.PushAsync(new ExpensesPage(_screenService));
             }
             catch (Exception ex)
