@@ -9,31 +9,14 @@ namespace SpendNote.Pages
         public ExpensesPage(IScreenshotProtectionService screenshotProtection) {
             isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
             NavigationPage.SetHasNavigationBar(this, false);
-            var mainLayout = new Grid();
-
-            var avatar = new ImageButton
+            var mainLayout = new Grid
             {
-                HeightRequest = 30,
-                WidthRequest = 30,
-                Margin = new Thickness(2),
-                Source = "default_avatar.jpg"
+                RowDefinitions = new RowDefinitionCollection
+                {
+                    new RowDefinition { Height = GridLength.Star },  // основной контент
+                    new RowDefinition { Height = GridLength.Auto },  // нижняя панель
+                }
             };
-
-            var profileButton = new Button
-            {
-                Text = $"{Session.SessionName}",
-                BackgroundColor = Colors.Transparent,
-                FontAttributes = FontAttributes.Bold
-            };
-
-            var horizontalUpper = new HorizontalStackLayout
-            {
-                VerticalOptions = LayoutOptions.Start,
-                Children = {avatar, profileButton}
-            };
-
-            profileButton.TextColor = isDarkMode ? Colors.White : Colors.Black;
-
 
             var createExpenses = new Button
             {
@@ -46,12 +29,60 @@ namespace SpendNote.Pages
                 HeightRequest = 60,
                 FontSize = 30
             };
-            
 
+            var mainPageButton = new ImageButton
+            {
+                WidthRequest = 40,
+                HeightRequest = 40,
+                Source = isDarkMode ? "home_page_button_white.png" : "home_page_button.png",
+            };
+
+            var searchPageButton = new ImageButton
+            {
+                WidthRequest = 40,
+                HeightRequest = 40,
+                Source = isDarkMode ? "search_page_button_white.png" : "search_page_button.png",
+            };
+
+            var accountPageButton = new ImageButton
+            {
+                WidthRequest = 40,
+                HeightRequest = 40,
+                Source = isDarkMode ? "account_page_button_white.png" : "account_page_button.png",
+            };
+
+            var settingsPageButton = new ImageButton
+            {
+                WidthRequest = 40,
+                HeightRequest = 40,
+                Source = isDarkMode ? "settings_page_button_white.png" : "settings_page_button.png",
+            };
+
+            var lowerPanel = new Grid {
+                VerticalOptions = LayoutOptions.End,
+                Padding = new Thickness(20, 10),
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Star },
+                },
+                Children = { mainPageButton, searchPageButton, accountPageButton, settingsPageButton }
+            };
 
             _screenService = screenshotProtection;
+
+            Grid.SetRow(createExpenses, 0);
+            Grid.SetRow(lowerPanel, 1);
+
+            Grid.SetColumn(mainPageButton, 0);
+            Grid.SetColumn(searchPageButton, 1);
+            Grid.SetColumn(accountPageButton, 2);
+            Grid.SetColumn(settingsPageButton, 3);
+
             mainLayout.Children.Add(createExpenses);
-            mainLayout.Children.Add(horizontalUpper);
+            mainLayout.Children.Add(lowerPanel);
             Content = mainLayout;
         }
 
