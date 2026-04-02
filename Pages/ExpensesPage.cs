@@ -58,8 +58,8 @@ namespace SpendNote.Pages
                 Source = isDarkMode ? "settings_page_button_white.png" : "settings_page_button.png",
             };
 
-            var lowerPanel = new Grid {
-                VerticalOptions = LayoutOptions.End,
+            var lowerPanel = new Grid
+            {
                 Padding = new Thickness(20, 10),
                 ColumnDefinitions = new ColumnDefinitionCollection
                 {
@@ -71,10 +71,17 @@ namespace SpendNote.Pages
                 Children = { mainPageButton, searchPageButton, accountPageButton, settingsPageButton }
             };
 
+            var lowerPanelBorder = new Border
+            {
+                Content = lowerPanel,
+                StrokeThickness = 0.4,
+                Stroke = Colors.Gray,
+            };
+
             _screenService = screenshotProtection;
 
             Grid.SetRow(createExpenses, 0);
-            Grid.SetRow(lowerPanel, 1);
+            Grid.SetRow(lowerPanelBorder, 1);
 
             Grid.SetColumn(mainPageButton, 0);
             Grid.SetColumn(searchPageButton, 1);
@@ -82,7 +89,7 @@ namespace SpendNote.Pages
             Grid.SetColumn(settingsPageButton, 3);
 
             mainLayout.Children.Add(createExpenses);
-            mainLayout.Children.Add(lowerPanel);
+            mainLayout.Children.Add(lowerPanelBorder);
             Content = mainLayout;
         }
 
