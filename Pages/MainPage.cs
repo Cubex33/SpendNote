@@ -18,7 +18,7 @@ namespace SpendNote.Pages
 
         private readonly IScreenshotProtectionService _screenService;
         public MainPage(IScreenshotProtectionService screenshotProtect)
-        {
+        { 
             NavigationPage.SetHasNavigationBar(this, false);
             CheckLogin();
             isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
@@ -92,19 +92,27 @@ namespace SpendNote.Pages
             Content = mainPanel;
         }
 
-        private async void CheckLogin()
+        private async Task CheckLogin()
         {
             var Id = await SecureStorage.Default.GetAsync("Id");
             var UserName = await SecureStorage.Default.GetAsync("Username");
+            var Remains = await SecureStorage.Default.GetAsync("Remains");
+
             if (Id != null)
             {
                 Session.SessionId = Id;
             }
+
             if (UserName != null)
             {
                 Session.SessionName = UserName;
             }
-            await Navigation.PushAsync(new ExpensesPage(_screenService));
+
+            if (Remains != null)
+            {
+                Session.Remains = int.TryParse(Remains, out var result) ? result : 0;
+            }    
+            await Navigation.PushAsync(new HomePage(_screenService));
         }
 
         private async Task SignIn()
@@ -129,6 +137,7 @@ namespace SpendNote.Pages
                 }
                 await SecureStorage.Default.SetAsync(nameof(user.Id), user.Id);
                 await SecureStorage.Default.SetAsync(nameof(user.Username), user.Username);
+                await SecureStorage.Default.SetAsync(nameof(user.Remains), user.Remains.ToString());
                 await SecureStorage.Default.SetAsync("SignInAt", DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"));
                 Session.SessionName = user.Username;
                 Session.SessionId = user.Id;
@@ -164,15 +173,17 @@ namespace SpendNote.Pages
                 {
                     Username = RegUsernameInputField.Text,
                     Password = cryptoPassword,
-                    CreatedAt = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy")
+                    CreatedAt = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"),
+                    Remains = 0
                 };
                 await SecureStorage.Default.SetAsync(nameof(user.Id), user.Id);
                 await SecureStorage.Default.SetAsync(nameof(user.Username), user.Username);
                 await SecureStorage.Default.SetAsync("SignInAt", DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy"));
+                await SecureStorage.Default.SetAsync(nameof(user.Remains), user.Remains.ToString());
                 await firebaseService.RegisterUser(user);
                 Session.SessionName = user.Username;
                 Session.SessionId = user.Id;
-                await Navigation.PushAsync(new ExpensesPage(_screenService));
+                await Navigation.PushAsync(new HomePage(_screenService));
             }
             catch (Exception ex)
             {

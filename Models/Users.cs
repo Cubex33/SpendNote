@@ -6,6 +6,7 @@
         public string Username { get; set; } = Guid.NewGuid().ToString();
         public string Password { get; set; } = Guid.NewGuid().ToString();
         public string CreatedAt { get; set; } = DateTime.Now.ToString();
+        public int Remains { get; set; } = 0;
 
         public List<Expenses> Expenses { get; set; } = new List<Expenses>();
     }

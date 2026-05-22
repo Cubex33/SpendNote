@@ -1,22 +1,59 @@
-﻿using SpendNote.Interfaces;
+﻿using Microsoft.Maui.Controls.Shapes;
+using SpendNote.Interfaces;
 
 namespace SpendNote.Pages
 {
-    public class ExpensesPage : ContentPage
+    public class HomePage : ContentPage
     {
         bool isDarkMode = false;
         private readonly IScreenshotProtectionService _screenService;
-        public ExpensesPage(IScreenshotProtectionService screenshotProtection) {
+
+        public HomePage(IScreenshotProtectionService screenshotProtection)
+        {
             isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
             NavigationPage.SetHasNavigationBar(this, false);
+
+            var verticalExpencesStack = new VerticalStackLayout
+            {
+                Children =
+                {
+                    new Label { Text = "Остаток:", FontSize = 25},
+                    new Label { Text = $"₸ {Session.Remains}", FontSize = 30, TextColor = Colors.Black}
+                }
+            };
+
+            var expenses = new Border
+            {
+                Margin = new Thickness(20, 0),
+                Stroke = Colors.Transparent,
+                StrokeThickness = 0,
+
+                StrokeShape = new RoundRectangle
+                {
+                    CornerRadius = new CornerRadius(12)
+                },
+
+                Background = Colors.White,
+
+                Shadow = new Shadow
+                {
+                    Brush = Colors.Black,
+                    Offset = new Point(0, 6),
+                    Radius = 15,
+                    Opacity = 0.2f
+                },
+
+                Content = verticalExpencesStack
+            };
 
             var verticalStack = new VerticalStackLayout
             {
                 Spacing = 10,
                 Children =
                 {
-                    new Label { Text = "SpendNote", FontSize = 24, HorizontalOptions = LayoutOptions.Center, TextColor = isDarkMode ? Colors.White : Colors.Black },
-                    new Label { Text = $"Здравствуйте, {Session.SessionName}", HorizontalOptions = LayoutOptions.Center, TextColor = isDarkMode ? Colors.White : Colors.Black }
+                    new Label { Text = "SpendNote", FontSize = 30, TextColor = isDarkMode ? Colors.White : Colors.Black, FontAttributes = FontAttributes.Bold, Margin = new Thickness(20, 0), FontFamily="Helvetica"},
+                    new Label { Text = $"Здравствуйте, {Session.SessionName}!", FontSize = 20, TextColor = isDarkMode ? Colors.White : Colors.Black, Margin = new Thickness(20, -10), FontFamily="Helvetica"},
+                    expenses
                 }
             };
 
@@ -26,12 +63,12 @@ namespace SpendNote.Pages
                 Content = verticalStack
             };
 
-            var mainLayout = new Grid   
+            var mainLayout = new Grid
             {
                 RowDefinitions = new RowDefinitionCollection
                 {
                     new RowDefinition { Height = GridLength.Star },
-                    new RowDefinition { Height = GridLength.Auto },  
+                    new RowDefinition { Height = GridLength.Auto },
                 }
             };
 

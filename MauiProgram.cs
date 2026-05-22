@@ -19,6 +19,7 @@ namespace SpendNote
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("helvetica_regular.otf", "Helvetica");
                 });
 
 #if ANDROID
