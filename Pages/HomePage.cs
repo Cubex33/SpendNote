@@ -17,8 +17,8 @@ namespace SpendNote.Pages
             {
                 Children =
                 {
-                    new Label { Text = "Остаток:", FontSize = 25},
-                    new Label { Text = $"₸ {Session.Remains}", FontSize = 30, TextColor = Colors.Black}
+                    new Label { Text = "Расход:", FontSize = 25, Margin = new Thickness(20), TextColor = isDarkMode ? Colors.White : Colors.Black},
+                    new Label { Text = $"{Session.Remains} ₸", FontSize = 30, TextColor = isDarkMode ? Colors.White : Colors.Black, Margin = new Thickness(20, 0), HorizontalOptions = LayoutOptions.Center},
                 }
             };
 
@@ -33,17 +33,24 @@ namespace SpendNote.Pages
                     CornerRadius = new CornerRadius(12)
                 },
 
-                Background = Colors.White,
+                Background = isDarkMode ? Colors.Black : Colors.White,
 
                 Shadow = new Shadow
                 {
-                    Brush = Colors.Black,
+                    Brush = isDarkMode ? Colors.White : Colors.Black,
                     Offset = new Point(0, 6),
                     Radius = 15,
                     Opacity = 0.2f
                 },
 
                 Content = verticalExpencesStack
+            };
+
+            var addExpend = new Button
+            {
+                Text = "Добавить расходы",
+                Margin = new Thickness(20, 0)
+
             };
 
             var verticalStack = new VerticalStackLayout
@@ -53,7 +60,8 @@ namespace SpendNote.Pages
                 {
                     new Label { Text = "SpendNote", FontSize = 30, TextColor = isDarkMode ? Colors.White : Colors.Black, FontAttributes = FontAttributes.Bold, Margin = new Thickness(20, 0), FontFamily="Helvetica"},
                     new Label { Text = $"Здравствуйте, {Session.SessionName}!", FontSize = 20, TextColor = isDarkMode ? Colors.White : Colors.Black, Margin = new Thickness(20, -10), FontFamily="Helvetica"},
-                    expenses
+                    expenses,
+                    addExpend
                 }
             };
 
@@ -140,7 +148,7 @@ namespace SpendNote.Pages
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _screenService.Disable();
+            _screenService.Enable();
         }
 
         protected override bool OnBackButtonPressed()
