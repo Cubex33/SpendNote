@@ -50,8 +50,9 @@ namespace SpendNote.Pages
             {
                 Text = "Добавить расходы",
                 Margin = new Thickness(20, 0)
-
             };
+
+            addExpend.Clicked += async (_, _) => { await Navigation.PushAsync(new AddExpasesPage(screenshotProtection)); };
 
             var verticalStack = new VerticalStackLayout
             {
